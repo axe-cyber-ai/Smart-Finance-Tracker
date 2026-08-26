@@ -1,0 +1,123 @@
+<div class="space-y-8 font-manrope">
+    
+    <!-- Top Hero Section -->
+    <div class="space-y-3 pt-2">
+        <div class="bg-[#AFDDFF] text-black text-[12px] font-bold leading-[15.6px] px-[6px] py-[2px] inline-block tracking-wider uppercase font-manrope">
+            AI 2.0 — AKLLI MOLIYAVIY INTELLEKT
+        </div>
+        <h2 class="font-graphik text-white text-[32px] sm:text-[44px] leading-[1em] tracking-tight font-normal">
+            Smart Finance <span class="text-[#AFDDFF]">AI Maslahatchi.</span>
+        </h2>
+        <p class="text-xs sm:text-sm text-white/50 max-w-xl leading-[18px]">
+            So'nggi 30–60 kunlik moliyaviy yozuvlaringizni chuqur tahlil qiling, anomaliyalarni aniqlang va shaxsiy tejash strategiyasini oling.
+        </p>
+    </div>
+
+    <!-- Action Bar -->
+    <div class="flex items-center justify-between border-y border-white/10 py-4">
+        <span class="text-xs font-mono text-[#AFDDFF] uppercase tracking-widest">[ AI HOLATI: FAOL ]</span>
+        <a href="/ai-assistant?analyze=1" 
+           class="bg-[#AFDDFF] hover:bg-[#c8e8ff] text-black px-[20px] py-[12px] flex items-center gap-[10px] transition-colors font-manrope font-bold text-[13px] uppercase tracking-wide">
+            <span>✦</span>
+            <span>Moliya Tahlilini Olish</span>
+        </a>
+    </div>
+
+    <% if(!analysis) { %>
+        <!-- Empty State Prompt -->
+        <div class="cyber-card p-12 sm:p-16 text-center space-y-4 max-w-2xl mx-auto">
+            <div class="text-3xl text-[#AFDDFF] font-bold">💡</div>
+            <div class="space-y-2">
+                <h3 class="text-lg font-graphik font-bold text-white uppercase tracking-wider">[ MOLIYAVIY TAHLIL TAYYOR EMAS ]</h3>
+                <p class="text-xs text-white/50 max-w-md mx-auto leading-[18px]">
+                    Tahlilni boshlash uchun yuqoridagi <strong>"Moliya Tahlilini Olish"</strong> tugmasini bosing. AI tizimi daromad, xarajat hamda byudjetlaringizni o'rganib chiqadi.
+                </p>
+            </div>
+        </div>
+    <% } else { %>
+        <!-- Analysis Results Dashboard -->
+        <div class="space-y-8">
+            
+            <!-- 3 Top Metric Cards -->
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                <!-- Card 1: Overall Financial Score -->
+                <div class="cyber-card p-[20px] space-y-4 flex flex-col justify-between">
+                    <div class="flex items-center justify-between">
+                        <span class="text-[12px] font-bold text-[#AFDDFF] uppercase tracking-wider">[ MOLIYAVIY BALL ]</span>
+                        <span class="text-xs font-mono text-white/50">0 - 100</span>
+                    </div>
+
+                    <div class="flex items-center gap-4">
+                        <div class="text-4xl sm:text-5xl font-graphik font-bold text-[#AFDDFF] tracking-tight">
+                            <%= analysis.financial_score %><span class="text-sm text-white/50 font-normal">/100</span>
+                        </div>
+                        <div class="flex-1">
+                            <div class="w-full h-3 bg-white/5 overflow-hidden p-0.5 border border-white/10">
+                                <div class="h-full bg-[#AFDDFF] transition-all duration-700" 
+                                     style="width: <%= analysis.financial_score %>%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <p class="text-[11px] text-white/70 leading-[16px]">
+                        <% if(analysis.financial_score >= 80) { %>
+                            🟢 A'lo! Moliyaviy intizomingiz va tejash darajangiz yuqori.
+                        <% } else if(analysis.financial_score >= 60) { %>
+                            🟡 Qoniqarli. Xarajatlarni yanada optimallashtirish imkoniyati bor.
+                        <% } else { %>
+                            🔴 Ogohlantirish! Xarajatlar daromaddan oshib ketish xavfi mavjud.
+                        <% } %>
+                    </p>
+                </div>
+
+                <!-- Card 2: Detected Anomalies -->
+                <div class="cyber-card p-[20px] space-y-3">
+                    <div class="flex items-center justify-between border-b border-white/10 pb-2.5">
+                        <span class="text-[12px] font-bold text-amber-400 uppercase tracking-wider">[ ANOMALIYALAR VA XAVFLAR ]</span>
+                        <span class="text-xs font-mono text-amber-300">⚠️ <%= analysis.anomalies.length %> ta</span>
+                    </div>
+
+                    <ul class="space-y-2 max-h-36 overflow-y-auto pr-1">
+                        <% analysis.anomalies.forEach(function(anomaly) { %>
+                        <li class="text-xs text-white/80 flex items-start gap-2 leading-[16px]">
+                            <span class="text-amber-400 font-bold">•</span>
+                            <span><%= anomaly %></span>
+                        </li>
+                        <% }); %>
+                    </ul>
+                </div>
+
+                <!-- Card 3: Best Saving Advice -->
+                <div class="cyber-card p-[20px] space-y-3 bg-[#AFDDFF]/5 border-[#AFDDFF]/30">
+                    <div class="flex items-center justify-between border-b border-[#AFDDFF]/20 pb-2.5">
+                        <span class="text-[12px] font-bold text-[#AFDDFF] uppercase tracking-wider">[ TEJASH BO'YICHA MASLAHAT ]</span>
+                        <span class="text-sm">💡</span>
+                    </div>
+
+                    <p class="text-xs font-medium text-white/90 leading-[18px]">
+                        <%= analysis.savings_tip %>
+                    </p>
+                </div>
+
+            </div>
+
+            <!-- Formatted Markdown Report Document -->
+            <div class="cyber-card p-8 sm:p-10 space-y-6">
+                <div class="flex items-center justify-between border-b border-white/10 pb-4">
+                    <h3 class="text-lg font-graphik font-bold text-white uppercase tracking-wider flex items-center gap-3">
+                        <span>📝 Shaxsiy Moliyaviy Hisobot</span>
+                    </h3>
+                    <span class="text-xs text-[#AFDDFF] font-mono border border-[#AFDDFF]/40 px-2 py-0.5">[ AI HISOBOTI ]</span>
+                </div>
+
+                <!-- Markdown Content Render -->
+                <div class="prose prose-invert max-w-none text-white/90 text-sm leading-[22px] space-y-4 font-sans [&>h3]:text-lg [&>h3]:font-bold [&>h3]:text-[#AFDDFF] [&>h4]:text-base [&>h4]:font-semibold [&>h4]:text-amber-300 [&>ul]:list-disc [&>ul]:pl-5 [&>ul]:space-y-1 [&>hr]:border-white/10 [&>p]:leading-relaxed">
+                    <%- analysis.html_report || analysis.markdown_report %>
+                </div>
+            </div>
+
+        </div>
+    <% } %>
+
+</div>

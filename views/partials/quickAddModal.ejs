@@ -1,0 +1,110 @@
+<div x-show="quickAddOpen" 
+     x-transition:enter="transition ease-out duration-200"
+     x-transition:enter-start="opacity-0 scale-95"
+     x-transition:enter-end="opacity-100 scale-100"
+     x-transition:leave="transition ease-in duration-150"
+     x-transition:leave-start="opacity-100 scale-100"
+     x-transition:leave-end="opacity-0 scale-95"
+     class="fixed inset-0 z-50 overflow-y-auto" x-cloak>
+    
+    <div class="flex min-h-screen items-center justify-center p-4 text-center sm:p-0">
+        
+        <!-- Backdrop -->
+        <div class="fixed inset-0 bg-black/90 backdrop-blur-md transition-opacity" @click="quickAddOpen = false"></div>
+
+        <!-- Modal Box -->
+        <div class="relative transform overflow-hidden bg-black border border-white/20 px-6 pt-6 pb-6 text-left shadow-2xl transition-all sm:my-8 sm:w-full sm:max-w-lg font-manrope">
+            
+            <div class="flex items-center justify-between border-b border-white/10 pb-4">
+                <div class="flex items-center gap-3">
+                    <span class="text-[#AFDDFF] font-bold text-lg">&#10022;</span>
+                    <div>
+                        <h3 class="text-base font-graphik font-bold text-white uppercase tracking-wider">Tezkor Tranzaksiya Qo'shish</h3>
+                        <p class="text-[11px] text-white/50">Daromad yoki xarajat yozuvini kiritish</p>
+                    </div>
+                </div>
+                <button @click="quickAddOpen = false" class="text-white/50 hover:text-white p-1">✕</button>
+            </div>
+
+            <form action="/transactions" method="POST" class="mt-6 space-y-4">
+                <input type="hidden" name="_csrf" value="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
+
+                <!-- Type Selector -->
+                <div>
+                    <label class="block text-[11px] font-bold text-white/70 uppercase tracking-wider mb-2">Tranzaksiya Turi</label>
+                    <div class="grid grid-cols-2 gap-3" x-data="{ type: 'expense' }">
+                        <label :class="type === 'expense' ? 'bg-rose-500/20 border-rose-500 text-rose-300' : 'bg-white/5 border-white/10 text-white/50'"
+                               class="flex items-center justify-center gap-2 p-3 border font-bold text-xs cursor-pointer transition-all">
+                            <input type="radio" name="type" value="expense" x-model="type" class="hidden">
+                            <span>💸 Xarajat</span>
+                        </label>
+                        <label :class="type === 'income' ? 'bg-[#AFDDFF]/20 border-[#AFDDFF] text-[#AFDDFF]' : 'bg-white/5 border-white/10 text-white/50'"
+                               class="flex items-center justify-center gap-2 p-3 border font-bold text-xs cursor-pointer transition-all">
+                            <input type="radio" name="type" value="income" x-model="type" class="hidden">
+                            <span>💰 Daromad</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Category Input -->
+                <div>
+                    <label for="quick_category_name" class="block text-[11px] font-bold text-white/70 uppercase tracking-wider mb-2">
+                        Kategoriya <span class="text-[10px] text-[#AFDDFF] font-normal lowercase">(o'zingiz yozing yoki tanlang)</span>
+                    </label>
+                    <input type="text" 
+                           id="quick_category_name" 
+                           name="category_name" 
+                           list="quick_category_list"
+                           placeholder="Kategoriya nomini yozing (Masalan: Oziq-ovqat, Taksi)..." 
+                           required 
+                           autocomplete="off"
+                           class="w-full bg-white/5 border border-white/10 px-4 py-3 text-white text-xs focus:outline-none focus:border-[#AFDDFF]">
+                    <datalist id="quick_category_list">
+                        <% if(typeof categories !== 'undefined' && categories) { %>
+                            <% categories.forEach(function(category) { %>
+                                <option value="<%= category.name %>"></option>
+                            <% }); %>
+                        <% } %>
+                    </datalist>
+                </div>
+
+                <!-- Amount -->
+                <div>
+                    <label for="quick_amount" class="block text-[11px] font-bold text-white/70 uppercase tracking-wider mb-2">Summa (UZS)</label>
+                    <div class="relative">
+                        <input type="number" step="0.01" id="quick_amount" name="amount" placeholder="Masalan: 150000" required
+                               class="w-full bg-white/5 border border-white/10 px-4 py-3 text-white text-xs focus:outline-none focus:border-[#AFDDFF] font-mono">
+                        <span class="absolute right-4 top-3 text-xs text-white/40 font-bold">so'm</span>
+                    </div>
+                </div>
+
+                <!-- Date -->
+                <div>
+                    <label for="quick_transaction_date" class="block text-[11px] font-bold text-white/70 uppercase tracking-wider mb-2">Sana</label>
+                    <input type="date" id="quick_transaction_date" name="transaction_date" value="<%= new Date().toISOString().split('T')[0] %>" required
+                           class="w-full bg-white/5 border border-white/10 px-4 py-3 text-white text-xs focus:outline-none focus:border-[#AFDDFF]">
+                </div>
+
+                <!-- Description -->
+                <div>
+                    <label for="quick_description" class="block text-[11px] font-bold text-white/70 uppercase tracking-wider mb-2">Tavsif (ixtiyoriy)</label>
+                    <input type="text" id="quick_description" name="description" placeholder="Batafsil izoh kiritishingiz mumkin..."
+                           class="w-full bg-white/5 border border-white/10 px-4 py-3 text-white text-xs focus:outline-none focus:border-[#AFDDFF]">
+                </div>
+
+                <!-- Submit Button -->
+                <div class="pt-4 flex justify-end gap-3 border-t border-white/10">
+                    <button type="button" @click="quickAddOpen = false"
+                            class="px-4 py-2 border border-white/20 text-white/70 text-xs font-semibold hover:bg-white/5">
+                        Bekor qilish
+                    </button>
+                    <button type="submit"
+                            class="px-5 py-2 bg-[#AFDDFF] hover:bg-[#c8e8ff] text-black font-bold text-xs uppercase tracking-wide">
+                        Saqlash
+                    </button>
+                </div>
+            </form>
+
+        </div>
+    </div>
+</div>

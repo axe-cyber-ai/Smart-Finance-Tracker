@@ -1,0 +1,342 @@
+<div class="space-y-8 font-manrope">
+    
+    <!-- Top Hero Section: H1 + Ecosystem Badge -->
+    <div class="space-y-3 pt-2">
+        <div class="bg-[#AFDDFF] text-black text-[12px] font-bold leading-[15.6px] px-[6px] py-[2px] inline-block tracking-wider uppercase font-manrope">
+            SHAXSIY MOLIYA VA AI EKOSIZTEMASI
+        </div>
+        <h1 class="font-graphik text-white text-[32px] sm:text-[48px] md:text-[56px] leading-[1em] tracking-tight font-normal">
+            Moliyaviy Erkinlik.<br>
+            <span class="text-[#AFDDFF]">Aqlli Balans va Tahlillar.</span>
+        </h1>
+        <p class="text-xs sm:text-sm text-white/50 max-w-xl leading-[18px]">
+            Real vaqt rejimida daromad, xarajat hamda byudjetlaringizni kuzating va sun'iy intellekt tahlillarini oling.
+        </p>
+    </div>
+
+    <!-- Budget Alert Banner (If Any) -->
+    <% if(budgetStatus.overall.status === 'critical') { %>
+        <div class="p-5 border border-rose-500 bg-rose-500/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <span class="text-rose-400 font-bold text-lg">⚠️</span>
+                <div>
+                    <h4 class="text-xs font-bold text-rose-300 uppercase tracking-wider">[ QIZIL OGOHLANTIRISH: BYUDJET LIMITIDAN OSHIB KETDI ]</h4>
+                    <p class="text-xs text-rose-200/80 mt-0.5">
+                        Joriy oy uchun ajratilgan <strong><%= budgetStatus.overall.budgeted.toLocaleString('uz-UZ') %> so'm</strong> umumiy byudjet sarflab bo'lindi (<%= budgetStatus.overall.percentage %>%).
+                    </p>
+                </div>
+            </div>
+            <a href="/budgets" class="px-3 py-1.5 bg-rose-500/20 text-rose-200 border border-rose-500 text-xs font-bold uppercase tracking-wider whitespace-nowrap">
+                Byudjetni Ko'rish
+            </a>
+        </div>
+    <% } else if(budgetStatus.overall.status === 'warning') { %>
+        <div class="p-5 border border-amber-500 bg-amber-500/10 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div class="flex items-center gap-3">
+                <span class="text-amber-400 font-bold text-lg">⚡</span>
+                <div>
+                    <h4 class="text-xs font-bold text-amber-300 uppercase tracking-wider">[ SARIQ OGOHLANTIRISH: BYUDJET 80% DAN OTDI ]</h4>
+                    <p class="text-xs text-amber-200/80 mt-0.5">
+                        Joriy oy uchun umumiy byudjetning <strong><%= budgetStatus.overall.percentage %>%</strong> qismi sarflandi. Qolgan mablag': <strong><%= budgetStatus.overall.remaining.toLocaleString('uz-UZ') %> so'm</strong>.
+                    </p>
+                </div>
+            </div>
+            <a href="/budgets" class="px-3 py-1.5 bg-amber-500/20 text-amber-200 border border-amber-500 text-xs font-bold uppercase tracking-wider whitespace-nowrap">
+                Byudjetni Ko'rish
+            </a>
+        </div>
+    <% } %>
+
+    <!-- 4 Chamfered Node Metric Cards -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-5">
+        
+        <!-- Metric 1: Total Net Balance -->
+        <div class="cyber-card cyber-card-hover p-[20px] space-y-3">
+            <div class="flex items-center justify-between">
+                <span class="text-[12px] leading-[15.6px] font-bold text-[#AFDDFF] uppercase tracking-wider">[ UMUMIY BALANS ]</span>
+                <span class="text-xs font-mono text-white/50">01.</span>
+            </div>
+            <div>
+                <p class="text-2xl sm:text-3xl font-graphik font-bold text-white tracking-tight">
+                    <%= totalBalance.toLocaleString('uz-UZ') %> <span class="text-xs font-manrope text-[#AFDDFF]">SO'M</span>
+                </p>
+                <p class="text-[11px] text-white/50 mt-1">Barcha vaqtlardagi sof balans</p>
+            </div>
+        </div>
+
+        <!-- Metric 2: Monthly Income -->
+        <div class="cyber-card cyber-card-hover p-[20px] space-y-3">
+            <div class="flex items-center justify-between">
+                <span class="text-[12px] leading-[15.6px] font-bold text-[#AFDDFF] uppercase tracking-wider">[ OYLIK DAROMAD ]</span>
+                <span class="text-xs font-mono text-white/50">02.</span>
+            </div>
+            <div>
+                <p class="text-2xl sm:text-3xl font-graphik font-bold text-[#AFDDFF] tracking-tight">
+                    +<%= monthlyIncome.toLocaleString('uz-UZ') %> <span class="text-xs font-manrope text-white/70">SO'M</span>
+                </p>
+                <p class="text-[11px] text-white/50 mt-1">Joriy oy uchun tushumlar</p>
+            </div>
+        </div>
+
+        <!-- Metric 3: Monthly Expense -->
+        <div class="cyber-card cyber-card-hover p-[20px] space-y-3">
+            <div class="flex items-center justify-between">
+                <span class="text-[12px] leading-[15.6px] font-bold text-rose-400 uppercase tracking-wider">[ OYLIK XARAJAT ]</span>
+                <span class="text-xs font-mono text-white/50">03.</span>
+            </div>
+            <div>
+                <p class="text-2xl sm:text-3xl font-graphik font-bold text-rose-400 tracking-tight">
+                    -<%= monthlyExpense.toLocaleString('uz-UZ') %> <span class="text-xs font-manrope text-rose-300">SO'M</span>
+                </p>
+                <p class="text-[11px] text-white/50 mt-1">Joriy oy uchun xarajatlar</p>
+            </div>
+        </div>
+
+        <!-- Metric 4: Remaining Budget -->
+        <div class="cyber-card cyber-card-hover p-[20px] space-y-3">
+            <div class="flex items-center justify-between">
+                <span class="text-[12px] leading-[15.6px] font-bold text-[#AFDDFF] uppercase tracking-wider">[ BYUDJETDAN QOLGAN ]</span>
+                <span class="text-xs font-mono text-white/50">04.</span>
+            </div>
+            <div>
+                <p class="text-2xl sm:text-3xl font-graphik font-bold text-white tracking-tight">
+                    <%= remainingBudget.toLocaleString('uz-UZ') %> <span class="text-xs font-manrope text-[#AFDDFF]">SO'M</span>
+                </p>
+                <p class="text-[10px] text-white/50 mt-1">Joriy oy rejasidan qolgan limit</p>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Charts Section: Category Doughnut & Monthly Bar Chart -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Chart 1: Category Structure (Span 5) -->
+        <div class="lg:col-span-5 cyber-card p-[20px] space-y-4">
+            <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                <h3 class="text-sm font-graphik font-bold text-white tracking-wide uppercase">[ KATEGORIYALAR STRUKTURASI ]</h3>
+                <span class="bg-[#AFDDFF] text-black text-[10px] font-bold px-2 py-0.5 rounded-[3px]">DOIRA DIAGRAMMA</span>
+            </div>
+
+            <div class="h-64 flex items-center justify-center relative">
+                <% if(categoryBreakdown.categories.length > 0) { %>
+                    <canvas id="categoryChart"></canvas>
+                <% } else { %>
+                    <div class="text-center text-white/50 text-xs">
+                        Ushbu oyda hali xarajatlar mavjud emas
+                    </div>
+                <% } %>
+            </div>
+
+            <!-- Legend breakdown list -->
+            <div class="space-y-2 pt-3 border-t border-white/10 max-h-40 overflow-y-auto pr-1">
+                <% categoryBreakdown.categories.forEach(function(cat) { %>
+                <div class="flex items-center justify-between text-xs py-1">
+                    <div class="flex items-center gap-2">
+                        <span class="w-3 h-3 rounded-full flex-shrink-0" style="background-color: <%= cat.color %>"></span>
+                        <span class="text-white/80 font-medium"><%= cat.category_name %></span>
+                    </div>
+                    <div class="flex items-center gap-2 font-mono">
+                        <span class="font-bold text-white"><%= cat.amount.toLocaleString('uz-UZ') %> SO'M</span>
+                        <span class="text-[10px] text-[#AFDDFF] bg-white/5 px-1.5 py-0.5 border border-white/10"><%= cat.percentage %>%</span>
+                    </div>
+                </div>
+                <% }); %>
+            </div>
+        </div>
+
+        <!-- Chart 2: 6-Month Income vs Expense Bar Chart (Span 7) -->
+        <div class="lg:col-span-7 cyber-card p-[20px] space-y-4">
+            <div class="flex items-center justify-between border-b border-white/10 pb-3">
+                <h3 class="text-sm font-graphik font-bold text-white tracking-wide uppercase">[ 6 OYLIK MOLIYAVIY O'SISH ]</h3>
+                <span class="bg-[#AFDDFF] text-black text-[10px] font-bold px-2 py-0.5 rounded-[3px]">USTUNLI DIAGRAMMA</span>
+            </div>
+
+            <div class="h-80 relative">
+                <canvas id="monthlyChart"></canvas>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Chamfered Info Card & AI Insight Bar -->
+    <div class="grid grid-cols-1 lg:grid-cols-12 gap-6">
+        
+        <!-- Left: AI Intelligence CTA Box (Span 8) -->
+        <div class="lg:col-span-8 cyber-card p-[20px] flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+            <div class="space-y-1">
+                <span class="text-[#AFDDFF] text-xs font-bold uppercase tracking-wider">[ AI INTELLEKTUAL MOTOR ]</span>
+                <h4 class="text-lg font-graphik font-bold text-white">AI Moliyaviy Salomatlik Tahlilchisi</h4>
+                <p class="text-xs text-white/50 leading-[18px]">
+                    Sun'iy intellekt yordamida moliyaviy balansingiz va xarajatlaringizdagi anomaliyalarni o'rganing.
+                </p>
+            </div>
+            <a href="/ai-assistant?analyze=1" 
+               class="bg-[#AFDDFF] hover:bg-[#c8e8ff] text-black px-[20px] py-[12px] flex items-center gap-[10px] transition-colors font-manrope font-bold text-[13px] uppercase tracking-wide whitespace-nowrap">
+                <span>✦</span>
+                <span>AI Tahlil Olish</span>
+            </a>
+        </div>
+
+        <!-- Right: Chamfered Transparency Card (Span 4) -->
+        <div class="lg:col-span-4 relative p-[20px] cyber-card">
+            <!-- Chamfer SVG Border -->
+            <svg class="absolute inset-0 w-full h-full pointer-events-none" viewBox="0 0 280 168" preserveAspectRatio="none">
+                <polygon points="0.5,0.5 279.5,0.5 279.5,167.5 30,167.5 0.5,137.5" fill="none" stroke="#AFDDFF" stroke-width="1" vectorEffect="non-scaling-stroke"/>
+            </svg>
+            <div class="relative z-10 space-y-2">
+                <span class="text-[11px] font-bold text-[#AFDDFF] uppercase tracking-wider block">[ MOLIYAVIY SHAFFOFLIK HISOBOTI ]</span>
+                <p class="text-xs text-white/70 leading-[18px]">
+                    Barcha tranzaksiyalar va byudjet hisob-kitoblari real vaqt rejimida shaffof ko'rsatiladi.
+                </p>
+                <a href="/reports" class="text-[#AFDDFF] text-xs font-bold hover:underline inline-block pt-2">
+                    Hisobotni ko'rish &rarr;
+                </a>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Recent Transactions Table -->
+    <div class="cyber-card p-[20px] space-y-4">
+        <div class="flex items-center justify-between border-b border-white/10 pb-4">
+            <div>
+                <h3 class="text-sm font-graphik font-bold text-white uppercase tracking-wider">[ SO'NGGI TRANZAKSIYALAR ]</h3>
+                <p class="text-xs text-white/50">Oxirgi kiritilgan daromad va xarajat yozuvlari</p>
+            </div>
+            <a href="/transactions" class="text-xs font-bold text-[#AFDDFF] hover:underline flex items-center gap-1">
+                <span>Barchasini ko'rish</span>
+                <span>&rarr;</span>
+            </a>
+        </div>
+
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-white">
+                <thead class="text-[11px] font-bold text-white/50 uppercase tracking-wider border-b border-white/10 bg-white/5">
+                    <tr>
+                        <th class="py-3 px-4">Kategoriya</th>
+                        <th class="py-3 px-4">Turi</th>
+                        <th class="py-3 px-4">Sana</th>
+                        <th class="py-3 px-4">Tavsif</th>
+                        <th class="py-3 px-4 text-right">Summa</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/5 font-manrope">
+                    <% if(latestTransactions.length > 0) { %>
+                        <% latestTransactions.forEach(function(tx) { %>
+                        <tr class="hover:bg-white/5 transition-colors">
+                            <td class="py-3.5 px-4 font-semibold text-white">
+                                <div class="flex items-center gap-2.5">
+                                    <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" style="background-color: <%= tx.category?.color || '#6B7280' %>"></span>
+                                    <span><%= tx.category?.name || "Noma'lum" %></span>
+                                </div>
+                            </td>
+                            <td class="py-3.5 px-4">
+                                <% if(tx.type === 'income') { %>
+                                    <span class="text-[#AFDDFF] font-bold">[ DAROMAD ]</span>
+                                <% } else { %>
+                                    <span class="text-rose-400 font-bold">[ XARAJAT ]</span>
+                                <% } %>
+                            </td>
+                            <td class="py-3.5 px-4 font-mono text-white/50">
+                                <%= tx.transactionDate.toISOString().split('T')[0] %>
+                            </td>
+                            <td class="py-3.5 px-4 text-white/70 max-w-xs truncate">
+                                <%= tx.description || '-' %>
+                            </td>
+                            <td class="py-3.5 px-4 text-right font-mono font-bold text-sm <%= tx.type === 'income' ? 'text-[#AFDDFF]' : 'text-rose-400' %>">
+                                <%= tx.type === 'income' ? '+' : '-' %><%= tx.amount.toLocaleString('uz-UZ') %> SO'M
+                            </td>
+                        </tr>
+                        <% }); %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="5" class="py-8 text-center text-white/50 text-xs">
+                                Tranzaksiyalar yozuvi topilmadi.
+                            </td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</div>
+
+<!-- Chart.js Scripts Initialization -->
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        
+        // 1. Category Doughnut Chart
+        const catCanvas = document.getElementById('categoryChart');
+        if (catCanvas) {
+            const catData = <%- JSON.stringify(categoryBreakdown.categories) %>;
+            new Chart(catCanvas, {
+                type: 'doughnut',
+                data: {
+                    labels: catData.map(c => c.category_name),
+                    datasets: [{
+                        data: catData.map(c => c.amount),
+                        backgroundColor: catData.map(c => c.color),
+                        borderWidth: 2,
+                        borderColor: '#000000'
+                    }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: { display: false }
+                    },
+                    cutout: '75%'
+                }
+            });
+        }
+
+        // 2. Monthly Income vs Expense Bar Chart
+        const monthlyCanvas = document.getElementById('monthlyChart');
+        if (monthlyCanvas) {
+            const monthlyData = <%- JSON.stringify(monthlyOverview) %>;
+            new Chart(monthlyCanvas, {
+                type: 'bar',
+                data: {
+                    labels: monthlyData.labels,
+                    datasets: [
+                        {
+                            label: "Daromad (So'm)",
+                            data: monthlyData.income,
+                            backgroundColor: '#AFDDFF',
+                            borderRadius: 2
+                        },
+                        {
+                            label: "Xarajat (So'm)",
+                            data: monthlyData.expense,
+                            backgroundColor: '#F43F5E',
+                            borderRadius: 2
+                        }
+                    ]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
+                    plugins: {
+                        legend: {
+                            labels: { color: 'rgba(255,255,255,0.7)', font: { family: 'Manrope', size: 12 } }
+                        }
+                    },
+                    scales: {
+                        x: {
+                            ticks: { color: 'rgba(255,255,255,0.5)', font: { family: 'Manrope' } },
+                            grid: { color: 'rgba(255,255,255,0.04)' }
+                        },
+                        y: {
+                            ticks: { color: 'rgba(255,255,255,0.5)', font: { family: 'Manrope' } },
+                            grid: { color: 'rgba(255,255,255,0.04)' }
+                        }
+                    }
+                }
+            });
+        }
+
+    });
+</script>

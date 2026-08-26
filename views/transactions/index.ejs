@@ -1,0 +1,249 @@
+<div class="space-y-8 font-manrope" x-data="{ createModalOpen: false, editModalOpen: false, editTx: {} }">
+    
+    <!-- Top Action Bar -->
+    <div class="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-4">
+        <div>
+            <h2 class="text-2xl font-graphik font-bold text-white uppercase tracking-tight">[ TRANSACTIONS_JOURNAL ]</h2>
+            <p class="text-xs text-white/50">Barcha daromad va xarajat yozuvlaringizni boshqaring</p>
+        </div>
+        <div class="flex items-center gap-3 w-full sm:w-auto">
+            <a href="/transactions/export" 
+               class="flex items-center justify-center gap-2 px-4 py-2.5 border border-white/20 bg-white/5 text-white text-xs font-semibold hover:border-[#AFDDFF] transition-colors w-full sm:w-auto">
+                <span>📥</span>
+                <span>CSV EKSPORT</span>
+            </a>
+            <button @click="createModalOpen = true" 
+                    class="bg-[#AFDDFF] hover:bg-[#c8e8ff] text-black px-[20px] py-[12px] flex items-center gap-[10px] transition-colors font-manrope font-bold text-xs uppercase tracking-wide w-full sm:w-auto">
+                <span>&#10022;</span>
+                <span>Yangi Yozuv</span>
+            </button>
+        </div>
+    </div>
+
+    <!-- Filter Controls Panel -->
+    <div class="cyber-card p-[20px] space-y-4">
+        <form method="GET" action="/transactions" class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
+            
+            <!-- Search -->
+            <div>
+                <label for="search" class="block text-[11px] font-bold text-white/70 uppercase tracking-wider mb-1.5">Qidiruv (Izoh)</label>
+                <input type="text" id="search" name="search" value="<%= query.search || '' %>" placeholder="Tavsif bo'yicha..." 
+                       class="w-full bg-white/5 border border-white/10 px-3.5 py-2.5 text-white text-xs focus:outline-none focus:border-[#AFDDFF]">
+            </div>
+
+            <!-- Type -->
+            <div>
+                <label for="type" class="block text-[11px] font-bold text-white/70 uppercase tracking-wider mb-1.5">Tranzaksiya Turi</label>
+                <select id="type" name="type" class="w-full bg-black border border-white/10 px-3.5 py-2.5 text-white text-xs focus:outline-none focus:border-[#AFDDFF]">
+                    <option value="">Barchasi</option>
+                    <option value="income" <%= query.type === 'income' ? 'selected' : '' %>>Daromad</option>
+                    <option value="expense" <%= query.type === 'expense' ? 'selected' : '' %>>Xarajat</option>
+                </select>
+            </div>
+
+            <!-- Category -->
+            <div>
+                <label for="category_id" class="block text-[11px] font-bold text-white/70 uppercase tracking-wider mb-1.5">Kategoriya</label>
+                <select id="category_id" name="category_id" class="w-full bg-black border border-white/10 px-3.5 py-2.5 text-white text-xs focus:outline-none focus:border-[#AFDDFF]">
+                    <option value="">Barchasi</option>
+                    <% categories.forEach(function(cat) { %>
+                        <option value="<%= cat.id %>" <%= query.category_id == cat.id ? 'selected' : '' %>><%= cat.name %></option>
+                    <% }); %>
+                </select>
+            </div>
+
+            <!-- Date Range: Start -->
+            <div>
+                <label for="start_date" class="block text-[11px] font-bold text-white/70 uppercase tracking-wider mb-1.5">Boshlanish Sanasi</label>
+                <input type="date" id="start_date" name="start_date" value="<%= query.start_date || '' %>"
+                       class="w-full bg-white/5 border border-white/10 px-3.5 py-2.5 text-white text-xs focus:outline-none focus:border-[#AFDDFF]">
+            </div>
+
+            <!-- Date Range: End -->
+            <div>
+                <label for="end_date" class="block text-[11px] font-bold text-white/70 uppercase tracking-wider mb-1.5">Tugash Sanasi</label>
+                <input type="date" id="end_date" name="end_date" value="<%= query.end_date || '' %>"
+                       class="w-full bg-white/5 border border-white/10 px-3.5 py-2.5 text-white text-xs focus:outline-none focus:border-[#AFDDFF]">
+            </div>
+
+            <!-- Buttons -->
+            <div class="sm:col-span-2 lg:col-span-5 flex items-center justify-end gap-2.5 pt-3 border-t border-white/10">
+                <% if(query.search || query.type || query.category_id || query.start_date || query.end_date) { %>
+                <a href="/transactions" class="px-4 py-2 border border-white/20 text-white/70 text-xs hover:text-white transition-colors">
+                    Filtrni tozalash
+                </a>
+                <% } %>
+                <button type="submit" class="px-5 py-2 bg-[#AFDDFF]/20 text-[#AFDDFF] border border-[#AFDDFF]/50 text-xs font-bold uppercase hover:bg-[#AFDDFF]/30">
+                    Filtrlash
+                </button>
+            </div>
+        </form>
+    </div>
+
+    <!-- Datalist for autocomplete -->
+    <datalist id="all_categories_list">
+        <% categories.forEach(function(cat) { %>
+            <option value="<%= cat.name %>"></option>
+        <% }); %>
+    </datalist>
+
+    <!-- Transactions Data Table -->
+    <div class="cyber-card">
+        <div class="overflow-x-auto">
+            <table class="w-full text-left text-xs text-white">
+                <thead class="text-[11px] font-bold text-white/50 uppercase tracking-wider border-b border-white/10 bg-white/5">
+                    <tr>
+                        <th class="py-3 px-4">Kategoriya</th>
+                        <th class="py-3 px-4">Turi</th>
+                        <th class="py-3 px-4">Sana</th>
+                        <th class="py-3 px-4">Tavsif</th>
+                        <th class="py-3 px-4 text-right">Summa</th>
+                        <th class="py-3 px-4 text-center">Amallar</th>
+                    </tr>
+                </thead>
+                <tbody class="divide-y divide-white/5">
+                    <% if(transactions.length > 0) { %>
+                        <% transactions.forEach(function(tx) { %>
+                        <tr class="hover:bg-white/5 transition-colors">
+                            <td class="py-3.5 px-4 font-semibold text-white">
+                                <div class="flex items-center gap-2.5">
+                                    <span class="w-2.5 h-2.5 rounded-full flex-shrink-0" style="background-color: <%= tx.category?.color || '#6B7280' %>"></span>
+                                    <span><%= tx.category?.name || "Noma'lum" %></span>
+                                </div>
+                            </td>
+                            <td class="py-3.5 px-4">
+                                <% if(tx.type === 'income') { %>
+                                    <span class="text-[#AFDDFF] font-bold">[ DAROMAD ]</span>
+                                <% } else { %>
+                                    <span class="text-rose-400 font-bold">[ XARAJAT ]</span>
+                                <% } %>
+                            </td>
+                            <td class="py-3.5 px-4 font-mono text-white/50">
+                                <%= tx.transactionDate.toISOString().split('T')[0] %>
+                            </td>
+                            <td class="py-3.5 px-4 text-white/70 max-w-xs truncate">
+                                <%= tx.description || '-' %>
+                            </td>
+                            <td class="py-3.5 px-4 text-right font-mono font-bold text-sm <%= tx.type === 'income' ? 'text-[#AFDDFF]' : 'text-rose-400' %>">
+                                <%= tx.type === 'income' ? '+' : '-' %><%= tx.amount.toLocaleString('uz-UZ') %> UZS
+                            </td>
+                            <td class="py-3.5 px-4 text-center">
+                                <div class="flex items-center justify-center gap-2">
+                                    <button @click="editTx = { id: <%= tx.id %>, category_name: `<%= tx.category?.name || '' %>`, type: `<%= tx.type %>`, amount: <%= tx.amount %>, description: `<%= tx.description || '' %>`, transaction_date: `<%= tx.transactionDate.toISOString().split('T')[0] %>` }; editModalOpen = true" 
+                                            class="p-1.5 text-white/50 hover:text-[#AFDDFF] transition-colors">
+                                        ✏️
+                                    </button>
+
+                                    <form method="POST" action="/transactions/<%= tx.id %>/delete" onsubmit="return confirm('Haqiqatan ham ushbu tranzaksiyani o\'chirmoqchimisiz?')">
+                                        <input type="hidden" name="_csrf" value="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
+                                        <button type="submit" class="p-1.5 text-white/50 hover:text-rose-400 transition-colors">
+                                            🗑️
+                                        </button>
+                                    </form>
+                                </div>
+                            </td>
+                        </tr>
+                        <% }); %>
+                    <% } else { %>
+                        <tr>
+                            <td colspan="6" class="py-12">
+                                <%- include('../partials/emptyState', { 
+                                    title: "Tranzaksiyalar topilmadi", 
+                                    description: "Qidiruv filtri bo'yicha yoki ushbu davrda hech qanday yozuv kiritilmadi.", 
+                                    icon: "💸" 
+                                }) %>
+                            </td>
+                        </tr>
+                    <% } %>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+    <!-- Create Transaction Modal -->
+    <div x-show="createModalOpen" class="fixed inset-0 z-50 overflow-y-auto" x-cloak>
+        <div class="flex min-h-screen items-center justify-center p-4">
+            <div class="fixed inset-0 bg-black/90 backdrop-blur-md" @click="createModalOpen = false"></div>
+            <div class="relative w-full max-w-lg bg-black border border-white/20 p-6 sm:p-8 shadow-2xl">
+                <div class="flex items-center justify-between border-b border-white/10 pb-4">
+                    <h3 class="text-base font-graphik font-bold text-white uppercase tracking-wider">Yangi Tranzaksiya Qo'shish</h3>
+                    <button @click="createModalOpen = false" class="text-white/50 hover:text-white">✕</button>
+                </div>
+                <form action="/transactions" method="POST" class="mt-4 space-y-4">
+                    <input type="hidden" name="_csrf" value="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
+                    <div>
+                        <label class="block text-xs font-bold text-white/70 mb-1.5">Turi</label>
+                        <select name="type" class="w-full bg-black border border-white/10 p-3 text-sm text-white">
+                            <option value="expense">Xarajat</option>
+                            <option value="income">Daromad</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-white/70 mb-1.5">Kategoriya (o'zingiz yozing yoki tanlang)</label>
+                        <input type="text" name="category_name" list="all_categories_list" required placeholder="Masalan: Oziq-ovqat, Taksi..." class="w-full bg-white/5 border border-white/10 p-3 text-sm text-white focus:border-[#AFDDFF] focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-white/70 mb-1.5">Summa (UZS)</label>
+                        <input type="number" step="0.01" name="amount" required class="w-full bg-white/5 border border-white/10 p-3 text-sm text-white focus:border-[#AFDDFF] focus:outline-none font-mono">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-white/70 mb-1.5">Sana</label>
+                        <input type="date" name="transaction_date" value="<%= new Date().toISOString().split('T')[0] %>" required class="w-full bg-white/5 border border-white/10 p-3 text-sm text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-white/70 mb-1.5">Izoh</label>
+                        <input type="text" name="description" class="w-full bg-white/5 border border-white/10 p-3 text-sm text-white">
+                    </div>
+                    <div class="pt-4 flex justify-end gap-3 border-t border-white/10">
+                        <button type="button" @click="createModalOpen = false" class="px-4 py-2 border border-white/20 text-white/70 text-xs">Bekor qilish</button>
+                        <button type="submit" class="px-5 py-2 bg-[#AFDDFF] text-black font-bold text-xs uppercase">Saqlash</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+    <!-- Edit Transaction Modal -->
+    <div x-show="editModalOpen" class="fixed inset-0 z-50 overflow-y-auto" x-cloak>
+        <div class="flex min-h-screen items-center justify-center p-4">
+            <div class="fixed inset-0 bg-black/90 backdrop-blur-md" @click="editModalOpen = false"></div>
+            <div class="relative w-full max-w-lg bg-black border border-white/20 p-6 sm:p-8 shadow-2xl">
+                <div class="flex items-center justify-between border-b border-white/10 pb-4">
+                    <h3 class="text-base font-graphik font-bold text-white uppercase tracking-wider">Tranzaksiyani Tahrirlash</h3>
+                    <button @click="editModalOpen = false" class="text-white/50 hover:text-white">✕</button>
+                </div>
+                <form :action="'/transactions/' + editTx.id + '/update'" method="POST" class="mt-4 space-y-4">
+                    <input type="hidden" name="_csrf" value="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
+                    <div>
+                        <label class="block text-xs font-bold text-white/70 mb-1.5">Turi</label>
+                        <select name="type" x-model="editTx.type" class="w-full bg-black border border-white/10 p-3 text-sm text-white">
+                            <option value="expense">Xarajat</option>
+                            <option value="income">Daromad</option>
+                        </select>
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-white/70 mb-1.5">Kategoriya (o'zingiz yozing yoki tanlang)</label>
+                        <input type="text" name="category_name" x-model="editTx.category_name" list="all_categories_list" required class="w-full bg-white/5 border border-white/10 p-3 text-sm text-white focus:border-[#AFDDFF] focus:outline-none">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-white/70 mb-1.5">Summa (UZS)</label>
+                        <input type="number" step="0.01" name="amount" x-model="editTx.amount" required class="w-full bg-white/5 border border-white/10 p-3 text-sm text-white font-mono">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-white/70 mb-1.5">Sana</label>
+                        <input type="date" name="transaction_date" x-model="editTx.transaction_date" required class="w-full bg-white/5 border border-white/10 p-3 text-sm text-white">
+                    </div>
+                    <div>
+                        <label class="block text-xs font-bold text-white/70 mb-1.5">Izoh</label>
+                        <input type="text" name="description" x-model="editTx.description" class="w-full bg-white/5 border border-white/10 p-3 text-sm text-white">
+                    </div>
+                    <div class="pt-4 flex justify-end gap-3 border-t border-white/10">
+                        <button type="button" @click="editModalOpen = false" class="px-4 py-2 border border-white/20 text-white/70 text-xs">Bekor qilish</button>
+                        <button type="submit" class="px-5 py-2 bg-[#AFDDFF] text-black font-bold text-xs uppercase">Yangilash</button>
+                    </div>
+                </form>
+            </div>
+        </div>
+    </div>
+
+</div>

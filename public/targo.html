@@ -1,0 +1,553 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TARGO // Scaling The Platform</title>
+
+    <!-- Quantico Google Font (weights 400 + 700) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Quantico:ital,wght@0,400;0,700;1,400;1,700&display=swap" rel="stylesheet">
+
+    <style>
+        /* Global Reset & Base Rules */
+        *, *::before, *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #F2F1F0;
+            color: #6b6f72;
+            font-family: 'Quantico', 'Arial Narrow', sans-serif;
+            overflow-x: hidden;
+            -webkit-font-smoothing: antialiased;
+        }
+
+        a {
+            color: #3a3a3a;
+            text-decoration: none;
+            transition: color 0.2s ease;
+        }
+
+        a:hover {
+            color: #000000;
+        }
+
+        h1, h2, h3, h4, h5, h6 {
+            font-family: 'Quantico', 'Arial Narrow', sans-serif;
+            color: #2b3033;
+            text-transform: uppercase;
+            letter-spacing: 0.01em;
+            line-height: 0.98;
+        }
+
+        /* Chamfered CTA Button Style */
+        .targo-btn {
+            display: inline-flex;
+            align-items: center;
+            background: #15BCDF;
+            border: 1px solid #0fa3c2;
+            color: #1a1c1e;
+            text-transform: uppercase;
+            font-weight: 700;
+            letter-spacing: 0.14em;
+            padding: 18px 34px;
+            font-size: clamp(13px, 2.2vw, 16px);
+            font-family: 'Quantico', 'Arial Narrow', sans-serif;
+            clip-path: polygon(0 0, calc(100% - 16px) 0, 100% 16px, 100% 100%, 16px 100%, 0 calc(100% - 16px));
+            box-shadow: 0 0 0 1px rgba(21,188,223,0.35), 0 10px 30px -12px rgba(15,163,194,0.6);
+            transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+            cursor: pointer;
+            text-decoration: none;
+        }
+
+        .targo-btn:hover {
+            background: #3fd0ef;
+            color: #1a1c1e;
+            box-shadow: 0 0 0 1px rgba(63,208,239,0.5), 0 12px 35px -10px rgba(15,163,194,0.8);
+            transform: translateY(-1px);
+        }
+
+        .targo-btn::after {
+            content: '';
+            display: inline-block;
+            width: 22px;
+            height: 1px;
+            background-color: #1a1c1e;
+            margin-left: 14px;
+        }
+
+        /* ---------------------------------------------------- */
+        /* SECTION 1: HERO                                      */
+        /* ---------------------------------------------------- */
+        .hero-section {
+            position: relative;
+            min-height: 100svh;
+            background-color: #F2F1F0;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            justify-content: space-between;
+        }
+
+        /* Hero Video */
+        .hero-video {
+            position: absolute;
+            pointer-events: none;
+            object-fit: contain;
+            height: auto;
+            top: 0;
+            right: -20%;
+            width: 99%;
+            z-index: 0;
+        }
+
+        @media (max-width: 700px) {
+            .hero-video {
+                top: 0;
+                left: -12%;
+                right: auto;
+                width: 119%;
+            }
+        }
+
+        /* Hero Scrim Overlay (Desktop only) */
+        .hero-scrim {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 70%;
+            height: 100%;
+            background: linear-gradient(90deg, #F2F1F0 0%, #F2F1F0 55%, rgba(242,241,240,0.85) 78%, rgba(242,241,240,0) 100%);
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @media (max-width: 700px) {
+            .hero-scrim {
+                display: none;
+            }
+        }
+
+        /* Navbar */
+        .navbar {
+            position: relative;
+            z-index: 10;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: clamp(20px, 5vw, 56px);
+            padding: clamp(20px, 3vw, 38px) clamp(20px, 4vw, 48px) 0 clamp(20px, 4vw, 48px);
+        }
+
+        .nav-logo-group {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .logo-circle {
+            width: 38px;
+            height: 38px;
+            background-color: #111111;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .logo-ellipse {
+            width: 20px;
+            height: 8px;
+            border: 2px solid #FFFFFF;
+            border-radius: 50%;
+            transform: rotate(-25deg);
+        }
+
+        .logo-text {
+            font-size: clamp(22px, 5vw, 30px);
+            font-weight: 400;
+            color: #111111;
+            letter-spacing: -0.5px;
+            text-transform: lowercase;
+        }
+
+        .nav-links {
+            display: flex;
+            align-items: center;
+            gap: 34px;
+        }
+
+        .nav-link {
+            font-weight: 700;
+            font-size: clamp(12px, 2.4vw, 15px);
+            letter-spacing: 0.06em;
+            color: #3a3a3a;
+            white-space: nowrap;
+            text-transform: uppercase;
+        }
+
+        .nav-link:hover {
+            color: #15BCDF;
+        }
+
+        .nav-contact-btn {
+            background: transparent;
+            border: none;
+            color: #FFFFFF;
+            text-transform: uppercase;
+            letter-spacing: 0.14em;
+            font-weight: 700;
+            font-size: 13px;
+            padding: 14px 26px;
+            clip-path: polygon(0 0, calc(100% - 12px) 0, 100% 12px, 100% 100%, 12px 100%, 0 calc(100% - 12px));
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            cursor: pointer;
+            transition: background 0.2s ease;
+        }
+
+        .nav-contact-btn:hover {
+            background: rgba(255, 255, 255, 0.14);
+        }
+
+        /* Mobile Navbar Controls */
+        .mobile-hamburger {
+            display: none;
+            background: #111;
+            border: none;
+            padding: 10px;
+            cursor: pointer;
+            flex-direction: column;
+            gap: 5px;
+        }
+
+        .hamburger-bar {
+            width: 22px;
+            height: 2px;
+            background-color: #FFFFFF;
+        }
+
+        .mobile-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 20px;
+            right: 20px;
+            background-color: #1a1c1e;
+            padding: 24px;
+            flex-direction: column;
+            gap: 18px;
+            z-index: 20;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.3);
+        }
+
+        .mobile-menu a {
+            color: #FFFFFF;
+            font-weight: 700;
+            letter-spacing: 0.06em;
+        }
+
+        @media (max-width: 700px) {
+            .nav-links, .nav-contact-btn {
+                display: none;
+            }
+            .mobile-hamburger {
+                display: flex;
+            }
+            .mobile-menu.open {
+                display: flex;
+            }
+        }
+
+        /* Hero Content */
+        .hero-content {
+            position: relative;
+            z-index: 5;
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+
+        .hero-headline {
+            font-size: min(clamp(34px, 7.6vw, 80px), 9.2vh);
+            font-weight: 700;
+            padding: min(clamp(40px, 9vw, 120px), 9vh) 20px min(clamp(24px, 4vw, 44px), 5vh) clamp(20px, 9vw, 118px);
+        }
+
+        @media (max-width: 700px) {
+            .hero-headline {
+                margin-top: 360px;
+                padding: 0 20px 28px 20px;
+                font-size: clamp(34px, 10vw, 56px);
+            }
+        }
+
+        .headline-line {
+            display: block;
+        }
+
+        .headline-indent {
+            margin-left: min(238px, 28vw);
+        }
+
+        .headline-accent {
+            color: #15BCDF;
+        }
+
+        .hero-cta-wrapper {
+            position: relative;
+            z-index: 5;
+            padding-left: calc(clamp(20px, 9vw, 118px) + min(238px, 28vw));
+            padding-bottom: min(clamp(36px, 6vw, 80px), 7vh);
+        }
+
+        @media (max-width: 700px) {
+            .hero-cta-wrapper {
+                padding-left: 20px;
+                padding-bottom: 40px;
+            }
+        }
+
+        /* ---------------------------------------------------- */
+        /* SECTION 2: ABOUT                                     */
+        /* ---------------------------------------------------- */
+        .about-section {
+            background: linear-gradient(180deg, #F2F1F0 0%, #F7F6F8 18%, #F7F6F8 100%);
+            padding: clamp(60px, 10vw, 140px) 0 clamp(30px, 5vw, 70px) clamp(20px, 9vw, 118px);
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 40px;
+            position: relative;
+        }
+
+        /* Left Column */
+        .about-left {
+            flex: 1 1 420px;
+            min-width: 300px;
+        }
+
+        .about-heading {
+            font-size: clamp(34px, 6.5vw, 72px);
+            font-weight: 700;
+        }
+
+        .about-indent {
+            margin-left: min(160px, 18vw);
+        }
+
+        .about-paragraph {
+            max-width: 520px;
+            margin: 32px 0 0 min(160px, 18vw);
+            font-size: clamp(14px, 1.6vw, 17px);
+            line-height: 1.7;
+            color: #6b6f72;
+        }
+
+        @media (max-width: 700px) {
+            .about-indent, .about-paragraph {
+                margin-left: 0;
+            }
+        }
+
+        .about-btn-wrapper {
+            margin: 36px 0 0 min(160px, 18vw);
+        }
+
+        @media (max-width: 700px) {
+            .about-btn-wrapper {
+                margin-left: 0;
+            }
+        }
+
+        /* Right Column */
+        .about-right {
+            flex: 1 1 360px;
+            min-width: 280px;
+            display: flex;
+            justify-content: flex-end;
+            position: relative;
+        }
+
+        .about-video-container {
+            position: relative;
+            width: 100%;
+            max-width: 644px;
+        }
+
+        .about-video {
+            width: 100%;
+            height: auto;
+            display: block;
+            object-fit: cover;
+        }
+
+        .about-video-overlay {
+            position: absolute;
+            top: 0;
+            right: 0;
+            width: 100%;
+            height: 100%;
+            background-color: #15BCDF;
+            mix-blend-mode: hue;
+            pointer-events: none;
+            z-index: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- SECTION 1: HERO -->
+    <section class="hero-section" id="hero">
+        
+        <!-- Background Video -->
+        <video id="hero-video" class="hero-video" autoplay muted loop playsinline preload="auto">
+            <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260823_050407_500d0339-ab28-41c1-9688-132a74a3b5aa.mp4" type="video/mp4">
+        </video>
+
+        <!-- Desktop Scrim Overlay -->
+        <div class="hero-scrim"></div>
+
+        <!-- Navbar -->
+        <header class="navbar">
+            <div class="nav-logo-group">
+                <div class="logo-circle">
+                    <div class="logo-ellipse"></div>
+                </div>
+                <span class="logo-text">targo</span>
+            </div>
+
+            <!-- Desktop Links -->
+            <nav class="nav-links">
+                <a href="#hero" class="nav-link">HOME</a>
+                <a href="#about" class="nav-link">ABOUT</a>
+                <a href="#contact" class="nav-link">CONTACT US</a>
+            </nav>
+
+            <!-- Desktop Contact Button -->
+            <button class="nav-contact-btn">
+                <svg width="17" height="13" viewBox="0 0 17 13" fill="none" stroke="currentColor" stroke-width="1.4">
+                    <rect x="1" y="1" width="15" height="11" rx="1" />
+                    <path d="M1 1.5L8.5 7L16 1.5" />
+                </svg>
+                <span>Contact us</span>
+            </button>
+
+            <!-- Mobile Hamburger -->
+            <button class="mobile-hamburger" id="hamburger-btn" aria-label="Toggle menu">
+                <div class="hamburger-bar"></div>
+                <div class="hamburger-bar"></div>
+                <div class="hamburger-bar"></div>
+            </button>
+
+            <!-- Mobile Menu Dropdown -->
+            <div class="mobile-menu" id="mobile-menu">
+                <a href="#hero">HOME</a>
+                <a href="#about">ABOUT</a>
+                <a href="#contact">CONTACT US</a>
+            </div>
+        </header>
+
+        <!-- Main Headline -->
+        <div class="hero-content">
+            <h1 class="hero-headline">
+                <span class="headline-line">SCALING</span>
+                <span class="headline-line">THE</span>
+                <span class="headline-line">PLATFORM</span>
+                <span class="headline-line headline-indent">FOR</span>
+                <span class="headline-line headline-indent">YOUR</span>
+                <span class="headline-line headline-indent headline-accent">BUSINESS</span>
+            </h1>
+        </div>
+
+        <!-- CTA Button -->
+        <div class="hero-cta-wrapper">
+            <a href="#about" class="targo-btn">GET STARTED</a>
+        </div>
+
+    </section>
+
+    <!-- SECTION 2: ABOUT -->
+    <section class="about-section" id="about">
+        
+        <!-- Left Column -->
+        <div class="about-left">
+            <h2 class="about-heading">
+                <div>ABOUT</div>
+                <div class="about-indent headline-accent">BUSINESS</div>
+            </h2>
+
+            <p class="about-paragraph">
+                Targo builds the testing infrastructure modern teams rely on. From automated pipelines to full-scale QA audits, we make sure your software ships fast and breaks nothing. Hundreds of releases, zero surprises.
+            </p>
+
+            <div class="about-btn-wrapper">
+                <a href="#contact" class="targo-btn">LEARN MORE</a>
+            </div>
+        </div>
+
+        <!-- Right Column -->
+        <div class="about-right">
+            <div class="about-video-container">
+                <video id="about-video" class="about-video" autoplay muted loop playsinline preload="auto">
+                    <source src="https://d8j0ntlcm91z4.cloudfront.net/user_38xzZboKViGWJOttwIXH07lWA1P/hf_20260823_063501_2e2c8971-de1e-473a-8611-a0c9ae7ee186.mp4" type="video/mp4">
+                </video>
+                <!-- Cyan Hue Overlay Rectangle -->
+                <div class="about-video-overlay"></div>
+            </div>
+        </div>
+
+    </section>
+
+    <!-- Video Robustness Script & Mobile Hamburger Logic -->
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Autoplay robustness helper
+            function ensureVideoPlays(vid) {
+                if (!vid) return;
+                vid.muted = true;
+                const playPromise = vid.play();
+                if (playPromise !== undefined) {
+                    playPromise.catch(function () {
+                        // Suppress browser autoplay rejection
+                    });
+                }
+            }
+
+            const heroVid = document.getElementById('hero-video');
+            const aboutVid = document.getElementById('about-video');
+
+            // Retry every 1s
+            setInterval(function () {
+                ensureVideoPlays(heroVid);
+                ensureVideoPlays(aboutVid);
+            }, 1000);
+
+            // Retry on first click or touch
+            function triggerPlay() {
+                ensureVideoPlays(heroVid);
+                ensureVideoPlays(aboutVid);
+            }
+            document.addEventListener('click', triggerPlay, { once: true });
+            document.addEventListener('touchstart', triggerPlay, { once: true });
+
+            // Mobile Hamburger Menu Toggle
+            const hamburgerBtn = document.getElementById('hamburger-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+
+            if (hamburgerBtn && mobileMenu) {
+                hamburgerBtn.addEventListener('click', function () {
+                    mobileMenu.classList.toggle('open');
+                });
+            }
+        });
+    </script>
+</body>
+</html>

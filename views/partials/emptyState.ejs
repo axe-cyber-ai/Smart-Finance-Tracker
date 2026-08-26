@@ -1,0 +1,22 @@
+<% 
+  const titleText = typeof title !== 'undefined' ? title : "Ma'lumot topilmadi";
+  const descText = typeof description !== 'undefined' ? description : "Hozircha hech qanday yozuv kiritilmagan.";
+  const iconEmoji = typeof icon !== 'undefined' ? icon : "📂";
+  const actionUrl = typeof actionUrl !== 'undefined' ? actionUrl : null;
+  const actionText = typeof actionText !== 'undefined' ? actionText : "Yangi qo'shish";
+%>
+
+<div class="cyber-card p-12 text-center flex flex-col items-center justify-center space-y-4 border border-white/10 rounded-2xl backdrop-blur-xl anim-fade-up">
+    <div class="w-16 h-16 rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-3xl shadow-inner">
+        <%= iconEmoji %>
+    </div>
+    <div class="space-y-1">
+        <h3 class="text-base font-graphik font-bold text-white uppercase tracking-wider"><%= titleText %></h3>
+        <p class="text-xs text-white/50 max-w-sm mx-auto font-manrope"><%= descText %></p>
+    </div>
+    <% if (actionUrl) { %>
+    <a href="<%= actionUrl %>" class="px-5 py-2.5 bg-[#AFDDFF] text-black font-graphik font-bold text-xs uppercase tracking-wider rounded-xl hover:bg-white transition-all transform hover:scale-105 shadow-lg shadow-[#AFDDFF]/10">
+        <%= actionText %>
+    </a>
+    <% } %>
+</div>

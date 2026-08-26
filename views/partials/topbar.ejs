@@ -1,0 +1,111 @@
+<header class="w-full bg-[#050811]/90 border-b border-white/10 backdrop-blur-xl sticky top-0 z-40">
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 py-3.5 flex items-center justify-between gap-4">
+        
+        <!-- Brand Logo -->
+        <a href="/dashboard" class="flex items-center gap-2.5 flex-shrink-0 group">
+            <div class="w-9 h-9 rounded-xl bg-gradient-to-tr from-emerald-400 via-teal-400 to-cyan-500 flex items-center justify-center font-bold text-slate-950 text-lg shadow-lg shadow-emerald-500/20 group-hover:scale-105 transition-transform">
+                ⚡
+            </div>
+            <span class="font-graphik font-extrabold text-white text-lg tracking-tight">
+                Smart<span class="bg-gradient-to-r from-emerald-400 to-teal-300 bg-clip-text text-transparent">Finance</span>
+            </span>
+        </a>
+
+        <!-- Desktop Navigation Links -->
+        <nav class="hidden lg:flex items-center gap-1 xl:gap-2">
+            
+            <a href="/dashboard" 
+               class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap <%= req.path === '/dashboard' ? 'bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 shadow-sm' : 'text-slate-300 hover:text-white hover:bg-white/5' %>">
+                Asosiy Panel
+            </a>
+
+            <a href="/transactions" 
+               class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap <%= req.path.startsWith('/transactions') ? 'bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 shadow-sm' : 'text-slate-300 hover:text-white hover:bg-white/5' %>">
+                Tranzaksiyalar
+            </a>
+
+            <a href="/budgets" 
+               class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all <%= req.path.startsWith('/budgets') ? 'bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 shadow-sm' : 'text-slate-300 hover:text-white hover:bg-white/5' %>">
+                Byudjetlar
+            </a>
+
+            <a href="/ai-assistant" 
+               class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap flex items-center gap-1.5 <%= req.path.startsWith('/ai-assistant') ? 'bg-purple-500/20 border border-purple-500/40 text-purple-300 shadow-sm' : 'text-slate-300 hover:text-purple-300 hover:bg-purple-500/10' %>">
+                <span>🤖</span>
+                <span>AI Maslahatchi</span>
+            </a>
+
+            <a href="/reports" 
+               class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap <%= req.path.startsWith('/reports') ? 'bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 shadow-sm' : 'text-slate-300 hover:text-white hover:bg-white/5' %>">
+                Hisobotlar
+            </a>
+
+            <a href="/categories" 
+               class="px-3.5 py-2 rounded-xl text-xs font-bold transition-all whitespace-nowrap <%= req.path.startsWith('/categories') ? 'bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 shadow-sm' : 'text-slate-300 hover:text-white hover:bg-white/5' %>">
+                Kategoriyalar
+            </a>
+
+        </nav>
+
+        <!-- Right Side Controls -->
+        <div class="flex items-center gap-3 flex-shrink-0">
+            
+            <!-- Quick Add Button -->
+            <button @click="quickAddOpen = true" 
+                    class="flex items-center gap-2 px-4 py-2 rounded-xl bg-gradient-to-r from-emerald-400 via-teal-400 to-emerald-500 text-slate-950 font-bold text-xs shadow-md shadow-emerald-500/20 hover:scale-105 hover:shadow-emerald-500/30 transition-all whitespace-nowrap">
+                <span>➕</span>
+                <span class="hidden sm:inline">Yangi Yozuv</span>
+            </button>
+
+            <!-- User Menu Dropdown -->
+            <div class="relative" x-data="{ dropdownOpen: false }">
+                <button @click="dropdownOpen = !dropdownOpen" 
+                        class="flex items-center gap-2 px-3 py-1.5 rounded-xl border border-white/10 bg-white/5 hover:bg-white/10 hover:border-white/20 transition-all text-xs font-semibold text-slate-200">
+                    <span class="w-6 h-6 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center font-bold text-xs">
+                        <%= user ? user.name.charAt(0).toUpperCase() : 'A' %>
+                    </span>
+                    <span class="max-w-[100px] truncate"><%= user ? user.name : 'Ali' %></span>
+                    <span class="text-[10px] text-slate-400">▼</span>
+                </button>
+
+                <div x-show="dropdownOpen" 
+                     @click.away="dropdownOpen = false"
+                     x-transition:enter="transition ease-out duration-150"
+                     x-transition:enter-start="opacity-0 scale-95"
+                     x-transition:enter-end="opacity-100 scale-100"
+                     x-transition:leave="transition ease-in duration-100"
+                     x-transition:leave-start="opacity-100 scale-100"
+                     x-transition:leave-end="opacity-0 scale-95"
+                     class="absolute right-0 mt-2 w-52 bg-[#0A0E1A] border border-white/10 rounded-2xl shadow-2xl p-2 z-50 font-manrope" x-cloak>
+                    
+                    <div class="px-3 py-2 border-b border-white/10">
+                        <p class="text-xs font-bold text-white truncate"><%= user ? user.name : 'Ali' %></p>
+                        <p class="text-[10px] text-slate-400 truncate"><%= user ? user.email : '' %></p>
+                    </div>
+
+                    <a href="/profile" class="flex items-center gap-2 px-3 py-2 text-xs text-slate-300 hover:text-emerald-400 hover:bg-white/5 rounded-xl transition-colors mt-1">
+                        <span>👤</span>
+                        <span>Profil Sozlamalari</span>
+                    </a>
+
+                    <form method="POST" action="/logout">
+                        <input type="hidden" name="_csrf" value="<%= typeof csrfToken !== 'undefined' ? csrfToken : '' %>">
+                        <button type="submit" class="w-full flex items-center gap-2 px-3 py-2 text-xs text-rose-400 hover:bg-rose-500/10 rounded-xl transition-colors text-left">
+                            <span>🚪</span>
+                            <span>Tizimdan Chiqish</span>
+                        </button>
+                    </form>
+                </div>
+            </div>
+
+            <!-- Hamburger Button for Mobile / Small Screens -->
+            <button @click="menuOpen = !menuOpen" 
+                    class="lg:hidden p-2 rounded-xl border border-white/10 bg-white/5 text-slate-300 hover:text-white hover:bg-white/10 transition-colors"
+                    aria-label="Toggle Menu">
+                <span class="text-base">☰</span>
+            </button>
+
+        </div>
+
+    </div>
+</header>
