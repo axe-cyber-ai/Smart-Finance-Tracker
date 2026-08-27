@@ -1,6 +1,6 @@
 # 💎 Smart Finance Tracker (Node.js Enterprise Edition)
 
-> Shaxsiymoliya va sun'iy intellekt (AI) asosidagi moliyaviy tahlil hamda byudjetlashtirish tizimi.
+> Shaxsiy moliya va sun'iy intellekt (AI) asosidagi moliyaviy tahlil hamda byudjetlashtirish tizimi.
 
 [![Node.js](https://img.shields.io/badge/Node.js-v20.x-green.svg)](https://nodejs.org)
 [![Express](https://img.shields.io/badge/Express-v4.18-blue.svg)](https://expressjs.com)
