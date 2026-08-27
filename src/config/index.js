@@ -8,8 +8,8 @@ const envSchema = z.object({
   APP_NAME: z.string().default('Smart Finance Tracker'),
   APP_ENV: z.enum(['local', 'development', 'staging', 'production']).default('local'),
   APP_URL: z.string().url().default('http://localhost:3000'),
-  DATABASE_URL: z.string().min(1, "DATABASE_URL environment variable is required"),
-  SESSION_SECRET: z.string().min(1, "SESSION_SECRET environment variable is required"),
+  DATABASE_URL: z.string().default('mysql://root:password@localhost:3306/smart_finance_db'),
+  SESSION_SECRET: z.string().default('smart_finance_tracker_production_secret_key_2026'),
   SERVICES_AI_SECRET: z.string().optional().default(''),
   SERVICES_AI_MODEL: z.string().default('gpt-4o-mini'),
 });
