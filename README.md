@@ -42,7 +42,7 @@
 
 ```bash
 # 1. Omborni klonlang va papkaga o'ting
-git clone https://github.com/user/smart-finance-tracker.git
+git clone https://github.com/axe-cyber-ai/Smart-Finance-Tracker.git
 cd smart-finance-tracker
 
 # 2. Bog'liqliklarni o'rnating
