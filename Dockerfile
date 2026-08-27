@@ -9,17 +9,14 @@ WORKDIR /app
 COPY package*.json ./
 COPY prisma ./prisma/
 
-# Install dependencies (including devDependencies for build & prisma generate)
-RUN npm ci
+# Install dependencies
+RUN npm install
 
 # Copy full application source code
 COPY . .
 
 # Generate Prisma Client
 RUN npx prisma generate
-
-# Build frontend assets with Vite
-RUN npm run build
 
 # ==========================================
 # STAGE 2: Production Runtime
@@ -33,9 +30,9 @@ ENV PORT=3000
 
 # Copy package files and install production dependencies only
 COPY package*.json ./
-RUN npm ci --only=production
+RUN npm install --only=production
 
-# Copy generated Prisma client, build output, and source files
+# Copy generated Prisma client and source files from builder
 COPY --from=builder /app/node_modules/.prisma ./node_modules/.prisma
 COPY --from=builder /app/node_modules/@prisma ./node_modules/@prisma
 COPY --from=builder /app/public ./public
