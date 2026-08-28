@@ -3,8 +3,8 @@ module.exports = {
     {
       name: 'smart-finance-tracker',
       script: 'src/app.js',
-      instances: 'max',
-      exec_mode: 'cluster',
+      instances: 1,
+      exec_mode: 'fork',
       env: {
         NODE_ENV: 'production',
         APP_ENV: 'production',

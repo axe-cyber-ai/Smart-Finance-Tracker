@@ -20,10 +20,8 @@ const projectRoot = path.join(__dirname, '..');
 
 const app = express();
 
-// Trust reverse proxy (Nginx) for secure cookies & accurate IP rate limiting in production
-if (config.APP_ENV === 'production') {
-  app.set('trust proxy', 1);
-}
+// Trust reverse proxy (Nginx/Host) for secure cookies & accurate IP rate limiting
+app.set('trust proxy', true);
 
 // Pino HTTP Request Logging Middleware
 app.use(
@@ -56,6 +54,8 @@ app.use(express.static(path.join(projectRoot, 'public')));
 app.use('/resources', express.static(path.join(projectRoot, 'resources')));
 
 // Express Session Setup with Secure Options
+const isCookieSecure = process.env.COOKIE_SECURE === 'true' ? true : (process.env.COOKIE_SECURE === 'false' ? false : 'auto');
+
 app.use(
   session({
     secret: config.SESSION_SECRET,
@@ -64,7 +64,7 @@ app.use(
     cookie: {
       httpOnly: true,
       sameSite: 'lax',
-      secure: config.APP_ENV === 'production',
+      secure: isCookieSecure,
       maxAge: 24 * 60 * 60 * 1000, // 1 day
     },
   })
