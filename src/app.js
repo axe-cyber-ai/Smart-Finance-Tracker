@@ -20,6 +20,11 @@ const projectRoot = path.join(__dirname, '..');
 
 const app = express();
 
+// Trust reverse proxy (Nginx) for secure cookies & accurate IP rate limiting in production
+if (config.APP_ENV === 'production') {
+  app.set('trust proxy', 1);
+}
+
 // Pino HTTP Request Logging Middleware
 app.use(
   pinoHttp({
