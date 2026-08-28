@@ -1,10 +1,10 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
 datasource db {
   provider = "mysql"
   url      = env("DATABASE_URL")
-}
-
-generator client {
-  provider = "prisma-client-js"
 }
 
 model User {
@@ -12,53 +12,66 @@ model User {
   name         String
   email        String        @unique
   password     String
-  role         String        @default("user") // 'user' | 'admin'
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
+  role         String        @default("user")
+  budgets      Budget[]
   categories   Category[]
   transactions Transaction[]
-  budgets      Budget[]
 }
 
 model Category {
   id           Int           @id @default(autoincrement())
   userId       Int?
-  user         User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
   name         String
-  type         String        // 'income' | 'expense'
+  type         String
   icon         String        @default("tag")
   color        String        @default("#6B7280")
   createdAt    DateTime      @default(now())
   updatedAt    DateTime      @updatedAt
-  transactions Transaction[]
   budgets      Budget[]
+  user         User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  transactions Transaction[]
+
+  @@index([userId], map: "Category_userId_fkey")
 }
 
 model Transaction {
   id              Int      @id @default(autoincrement())
   userId          Int
-  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
   categoryId      Int
-  category        Category @relation(fields: [categoryId], references: [id], onDelete: Restrict)
-  type            String   // 'income' | 'expense'
+  type            String
   amount          Float
   description     String?
   transactionDate DateTime
   createdAt       DateTime @default(now())
   updatedAt       DateTime @updatedAt
+  category        Category @relation(fields: [categoryId], references: [id])
+  user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([categoryId], map: "Transaction_categoryId_fkey")
+  @@index([userId], map: "Transaction_userId_fkey")
 }
 
 model Budget {
   id         Int       @id @default(autoincrement())
   userId     Int
-  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   categoryId Int?
-  category   Category? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   amount     Float
   month      Int
   year       Int
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
+  category   Category? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, categoryId, month, year])
+  @@index([categoryId], map: "Budget_categoryId_fkey")
+}
+
+model Session {
+  id        String   @id
+  sid       String   @unique
+  data      String   @db.Text
+  expiresAt DateTime
 }

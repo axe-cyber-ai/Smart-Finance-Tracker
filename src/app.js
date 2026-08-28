@@ -1,6 +1,8 @@
 import express from 'express';
 import expressLayouts from 'express-ejs-layouts';
 import session from 'express-session';
+import { PrismaSessionStore } from '@quixo3/prisma-session-store';
+import { PrismaClient } from '@prisma/client';
 import path from 'path';
 import helmet from 'helmet';
 import pinoHttp from 'pino-http';
@@ -53,7 +55,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(express.static(path.join(projectRoot, 'public')));
 app.use('/resources', express.static(path.join(projectRoot, 'resources')));
 
-// Express Session Setup with Secure Options
+// Express Session Setup with Prisma Database Store (persistent across restarts)
+const prismaClient = new PrismaClient();
 const isCookieSecure = process.env.COOKIE_SECURE === 'true' ? true : (process.env.COOKIE_SECURE === 'false' ? false : 'auto');
 
 app.use(
@@ -67,6 +70,11 @@ app.use(
       secure: isCookieSecure,
       maxAge: 24 * 60 * 60 * 1000, // 1 day
     },
+    store: new PrismaSessionStore(prismaClient, {
+      checkPeriod: 2 * 60 * 1000, // cleanup expired sessions every 2 min
+      dbRecordIdIsSessionId: true,
+      dbRecordIdFunction: undefined,
+    }),
   })
 );
 
