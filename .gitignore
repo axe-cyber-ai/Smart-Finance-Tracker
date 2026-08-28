@@ -28,3 +28,12 @@ _ide_helper.php
 Homestead.json
 Homestead.yaml
 Thumbs.db
+
+# Temp test files
+*.txt
+*.html
+check_db.js
+cookies*.txt
+session*.txt
+headers*.txt
+response.txt
