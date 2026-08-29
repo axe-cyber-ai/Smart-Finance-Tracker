@@ -33,7 +33,7 @@ model Category {
   user         User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
   transactions Transaction[]
 
-  @@index([userId], map: "Category_userId_fkey")
+  @@index([userId])
 }
 
 model Transaction {
@@ -49,8 +49,8 @@ model Transaction {
   category        Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([categoryId], map: "Transaction_categoryId_fkey")
-  @@index([userId], map: "Transaction_userId_fkey")
+  @@index([categoryId])
+  @@index([userId])
 }
 
 model Budget {
@@ -66,7 +66,7 @@ model Budget {
   user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, categoryId, month, year])
-  @@index([categoryId], map: "Budget_categoryId_fkey")
+  @@index([categoryId])
 }
 
 model Session {
