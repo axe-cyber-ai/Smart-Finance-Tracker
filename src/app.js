@@ -23,7 +23,8 @@ const projectRoot = path.join(__dirname, '..');
 const app = express();
 
 // Trust reverse proxy (Nginx/Host) for secure cookies & accurate IP rate limiting
-app.set('trust proxy', true);
+// Use 1 (not true) for Render.com / single-hop reverse proxies
+app.set('trust proxy', 1);
 
 // Pino HTTP Request Logging Middleware
 app.use(
