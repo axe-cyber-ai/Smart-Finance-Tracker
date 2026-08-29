@@ -32,8 +32,6 @@ model Category {
   budgets      Budget[]
   user         User?         @relation(fields: [userId], references: [id], onDelete: Cascade)
   transactions Transaction[]
-
-  @@index([userId])
 }
 
 model Transaction {
@@ -48,9 +46,6 @@ model Transaction {
   updatedAt       DateTime @updatedAt
   category        Category @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   user            User     @relation(fields: [userId], references: [id], onDelete: Cascade)
-
-  @@index([categoryId])
-  @@index([userId])
 }
 
 model Budget {
@@ -62,16 +57,15 @@ model Budget {
   year       Int
   createdAt  DateTime  @default(now())
   updatedAt  DateTime  @updatedAt
-  category   Category? @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  category   Category? @relation(fields: [categoryId], references: [id], onDelete: SetNull)
   user       User      @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@unique([userId, categoryId, month, year])
-  @@index([categoryId])
 }
 
 model Session {
   id        String   @id
   sid       String   @unique
-  data      String   @db.Text
+  data      String
   expiresAt DateTime
 }
