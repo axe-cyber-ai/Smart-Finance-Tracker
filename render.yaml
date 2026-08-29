@@ -9,9 +9,26 @@ services:
         value: production
       - key: PORT
         value: 3000
+      - key: APP_URL
+        fromService:
+          type: web
+          name: smart-finance-tracker
+          property: host
       - key: SESSION_SECRET
         generateValue: true
       - key: DATABASE_URL
-        sync: false
+        fromDatabase:
+          name: smart-finance-db
+          property: connectionString
       - key: COOKIE_SECURE
         value: true
+      - key: SERVICES_AI_SECRET
+        sync: false
+      - key: SERVICES_AI_MODEL
+        value: gpt-4o-mini
+
+databases:
+  - name: smart-finance-db
+    databaseName: smart_finance
+    user: smart_finance_user
+    plan: free
